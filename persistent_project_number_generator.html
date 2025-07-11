@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Persistent Project Number Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+        select, button { padding: 10px; font-size: 16px; margin: 10px; }
+        #output { margin-top: 20px; font-size: 20px; color: green; }
+    </style>
+</head>
+<body>
+    <h1>Project Number Generator</h1>
+    <select id="conditionSelector">
+        <option value="KSA23006-LO">KSA23006 - LO</option>
+        <option value="KSA23006-SLO">KSA23006 - SLO</option>
+        <option value="SAIJ23011-LO">SAIJ23011 - LO</option>
+        <option value="SAIJ23011-SLO">SAIJ23011 - SLO</option>
+    </select>
+    <button onclick="generateProjectNumber()">Generate Project Number</button>
+    <button onclick="resetSerialNumbers()">Reset Serial Numbers</button>
+    <div id="output"></div>
+
+    <script>
+        const initialSerials = {
+            "KSA23006-LO": 300,
+            "KSA23006-SLO": 119,
+            "SAIJ23011-LO": 160,
+            "SAIJ23011-SLO": 135
+        };
+
+        function getSerials() {
+            const stored = localStorage.getItem("serialNumbers");
+            return stored ? JSON.parse(stored) : { ...initialSerials };
+        }
+
+        function saveSerials(serials) {
+            localStorage.setItem("serialNumbers", JSON.stringify(serials));
+        }
+
+        function generateProjectNumber() {
+            const condition = document.getElementById("conditionSelector").value;
+            const serials = getSerials();
+            const serial = serials[condition]++;
+            saveSerials(serials);
+
+            const parts = condition.split("-");
+            const projectNumber = `${parts[0]}-${parts[1]}-XX-${serial}`;
+            document.getElementById("output").innerText = `Generated Project Number: ${projectNumber}`;
+        }
+
+        function resetSerialNumbers() {
+            saveSerials({ ...initialSerials });
+            document.getElementById("output").innerText = "Serial numbers have been reset.";
+        }
+    </script>
+</body>
+</html>
