@@ -1,27 +1,27 @@
 
 <!DOCTYPE html>
+
 <html>
 <head>
-    <title>Persistent Project Number Generator</title>
-    <style>
+<title>Persistent Project Number Generator</title>
+<style>
         body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
         select, button { padding: 10px; font-size: 16px; margin: 10px; }
         #output { margin-top: 20px; font-size: 20px; color: green; }
     </style>
 </head>
 <body>
-    <h1>Project Number Generator</h1>
-    <select id="conditionSelector">
-        <option value="KSA23006-LO">KSA23006 - LO</option>
-        <option value="KSA23006-SLO">KSA23006 - SLO</option>
-        <option value="SAIJ23011-LO">SAIJ23011 - LO</option>
-        <option value="SAIJ23011-SLO">SAIJ23011 - SLO</option>
-    </select>
-    <button onclick="generateProjectNumber()">Generate Project Number</button>
-    <button onclick="resetSerialNumbers()">Reset Serial Numbers</button>
-    <div id="output"></div>
-
-    <script>
+<h1>Project Number Generator</h1>
+<select id="conditionSelector">
+<option value="KSA23006-LO">KSA23006 - LO</option>
+<option value="KSA23006-SLO">KSA23006 - SLO</option>
+<option value="SAIJ23011-LO">SAIJ23011 - LO</option>
+<option value="SAIJ23011-SLO">SAIJ23011 - SLO</option>
+<option>KSA24002-LO-XX</option><option>KSA24002-SLO-XX</option><option>LINQ-OH-LO-XX</option><option>LINQ-OH-SLO-XX</option></select>
+<button onclick="generateProjectNumber()">Generate Project Number</button>
+<button onclick="resetSerialNumbers()">Reset Serial Numbers</button>
+<div id="output"></div>
+<script>
         const initialSerials = {
             "KSA23006-LO": 300,
             "KSA23006-SLO": 119,
