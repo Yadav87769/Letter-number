@@ -1,59 +1,97 @@
-
 <!DOCTYPE html>
-
 <html>
 <head>
 <title>Persistent Project Number Generator</title>
 <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-        select, button { padding: 10px; font-size: 16px; margin: 10px; }
-        #output { margin-top: 20px; font-size: 20px; color: green; }
-    </style>
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    select, button { padding: 10px; font-size: 16px; margin: 10px; }
+    #output { margin-top: 20px; font-size: 20px; color: green; }
+    #logDisplay { margin-top: 30px; text-align: left; width: 80%; margin-left: auto; margin-right: auto; }
+</style>
 </head>
 <body>
 <h1>Project Number Generator</h1>
 <select id="conditionSelector">
-<option value="KSA23006-LO">KSA23006 - LO</option>
-<option value="KSA23006-SLO">KSA23006 - SLO</option>
-<option value="SAIJ23011-LO">SAIJ23011 - LO</option>
-<option value="SAIJ23011-SLO">SAIJ23011 - SLO</option>
-<option>LNQ24002-LO-XX</option><option>LNQ24002-SLO-XX</option><option>LINQ-OH-LO-XX</option><option>LINQ-OH-SLO-XX</option></select>
+    <option value="KSA23006-LO">KSA23006 - LO</option>
+    <option value="KSA23006-SLO">KSA23006 - SLO</option>
+    <option value="SAIJ23011-LO">SAIJ23011 - LO</option>
+    <option value="SAIJ23011-SLO">SAIJ23011 - SLO</option>
+    <option>LNQ24002-LO-XX</option>
+    <option>LNQ24002-SLO-XX</option>
+    <option>LINQ-OH-LO-XX</option>
+    <option>LINQ-OH-SLO-XX</option>
+</select>
+<label for="usernameDropdown">Select Username: </label>
+<select id="usernameDropdown">
+    <option value="Byron">Byron</option>
+    <option value="Caroline">Caroline</option>
+    <option value="Ruel">Ruel</option>
+    <option value="Ronielyn">Ronielyn</option>
+    <option value="Yadav">Yadav</option>
+</select><br/>
 <button onclick="generateProjectNumber()">Generate Project Number</button>
 <button onclick="resetSerialNumbers()">Reset Serial Numbers</button>
 <div id="output"></div>
+<div id="logDisplay"></div>
 <script>
-        const initialSerials = {
-            "KSA23006-LO": 300,
-            "KSA23006-SLO": 119,
-            "SAIJ23011-LO": 160,
-            "SAIJ23011-SLO": 135
-            "LNQ-OH-LO-XX": 10
-        };
+    const initialSerials = {
+        "KSA23006-LO": 300,
+        "KSA23006-SLO": 119,
+        "SAIJ23011-LO": 160,
+        "SAIJ23011-SLO": 135
+    };
 
-        function getSerials() {
-            const stored = localStorage.getItem("serialNumbers");
-            return stored ? JSON.parse(stored) : { ...initialSerials };
-        }
+    function getSerials() {
+        const stored = localStorage.getItem("serialNumbers");
+        return stored ? JSON.parse(stored) : { ...initialSerials };
+    }
 
-        function saveSerials(serials) {
-            localStorage.setItem("serialNumbers", JSON.stringify(serials));
-        }
+    function saveSerials(serials) {
+        localStorage.setItem("serialNumbers", JSON.stringify(serials));
+    }
 
-        function generateProjectNumber() {
-            const condition = document.getElementById("conditionSelector").value;
-            const serials = getSerials();
-            const serial = serials[condition]++;
-            saveSerials(serials);
+    function getLog() {
+        const log = localStorage.getItem("projectLog");
+        return log ? JSON.parse(log) : [];
+    }
 
-            const parts = condition.split("-");
-            const projectNumber = `${parts[0]}-${parts[1]}-XX-${serial}`;
-            document.getElementById("output").innerText = `Generated Project Number: ${projectNumber}`;
-        }
+    function saveLog(log) {
+        localStorage.setItem("projectLog", JSON.stringify(log));
+    }
 
-        function resetSerialNumbers() {
-            saveSerials({ ...initialSerials });
-            document.getElementById("output").innerText = "Serial numbers have been reset.";
-        }
-    </script>
+    function generateProjectNumber() {
+        const condition = document.getElementById("conditionSelector").value;
+        const username = document.getElementById("usernameDropdown").value;
+
+        const serials = getSerials();
+        const serial = serials[condition]++;
+        saveSerials(serials);
+
+        const parts = condition.split("-");
+        const projectNumber = `${parts[0]}-${parts[1]}-XX-${serial}`;
+        document.getElementById("output").innerText = `Generated Project Number: ${projectNumber}`;
+
+        const log = getLog();
+        const timestamp = new Date().toLocaleString();
+        log.unshift({ username, projectNumber, timestamp });
+        saveLog(log);
+        loadLog();
+    }
+
+    function resetSerialNumbers() {
+        saveSerials({ ...initialSerials });
+        document.getElementById("output").innerText = "Serial numbers have been reset.";
+    }
+
+    function loadLog() {
+        const log = getLog();
+        const logDiv = document.getElementById("logDisplay");
+        logDiv.innerHTML = "<h3>Project Number Log</h3><ul>" +
+            log.map(entry => `<li><strong>${entry.projectNumber}</strong> by ${entry.username} at ${entry.timestamp}</li>`).join('') +
+            "</ul>";
+    }
+
+    window.onload = loadLog;
+</script>
 </body>
 </html>
